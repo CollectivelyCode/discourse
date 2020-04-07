@@ -10,9 +10,11 @@
       </div>
     </div>
 
-    <div class="published-page-body">
-      <%= @topic.first_post.cooked.html_safe %>
-    </div>
+    <%- if @topic.first_post.present? %>
+      <div class="published-page-body">
+        <%= @topic.first_post.cooked.html_safe %>
+      </div>
+    <%- end if -%>
   </div>
 
 </div>

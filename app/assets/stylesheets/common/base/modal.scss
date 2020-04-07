@@ -685,10 +685,10 @@
 }
 
 .publish-page-modal .modal-body {
-  p {
+  p.publish-description {
     margin-top: 0;
   }
-  input {
+  input.publish-slug {
     width: 100%;
   }
 

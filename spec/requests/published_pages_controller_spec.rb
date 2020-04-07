@@ -16,31 +16,27 @@ RSpec.describe PublishedPagesController do
       it "returns true for a new slug" do
         get "/pub/check-slug.json?slug=cool-slug-man"
         expect(response).to be_successful
-        json = JSON.parse(response.body)
-        expect(json["valid_slug"]).to eq(true)
+        expect(response.parsed_body["valid_slug"]).to eq(true)
       end
 
       it "returns true for a new slug with whitespace" do
         get "/pub/check-slug.json?slug=cool-slug-man%20"
         expect(response).to be_successful
-        json = JSON.parse(response.body)
-        expect(json["valid_slug"]).to eq(true)
+        expect(response.parsed_body["valid_slug"]).to eq(true)
       end
 
       it "returns false for an empty value" do
         get "/pub/check-slug.json?slug="
         expect(response).to be_successful
-        json = JSON.parse(response.body)
-        expect(json["valid_slug"]).to eq(false)
-        expect(json["reason"]).to be_present
+        expect(response.parsed_body["valid_slug"]).to eq(false)
+        expect(response.parsed_body["reason"]).to be_present
       end
 
       it "returns false for a reserved value" do
         get "/pub/check-slug.json", params: { slug: "check-slug" }
         expect(response).to be_successful
-        json = JSON.parse(response.body)
-        expect(json["valid_slug"]).to eq(false)
-        expect(json["reason"]).to be_present
+        expect(response.parsed_body["valid_slug"]).to eq(false)
+        expect(response.parsed_body["reason"]).to be_present
       end
     end
 
@@ -103,12 +99,10 @@ RSpec.describe PublishedPagesController do
         it "creates the published page record" do
           put "/pub/by-topic/#{topic.id}.json", params: { published_page: { slug: 'i-hate-salt' } }
           expect(response).to be_successful
-          json = JSON.parse(response.body)
-          expect(json).to be_present
-          expect(json['published_page']).to be_present
-          expect(json['published_page']['slug']).to eq("i-hate-salt")
+          expect(response.parsed_body['published_page']).to be_present
+          expect(response.parsed_body['published_page']['slug']).to eq("i-hate-salt")
 
-          expect(PublishedPage.exists?(topic_id: json['published_page']['id'])).to eq(true)
+          expect(PublishedPage.exists?(topic_id: response.parsed_body['published_page']['id'])).to eq(true)
           expect(UserHistory.exists?(
             acting_user_id: admin.id,
             action: UserHistory.actions[:page_published],

@@ -3,7 +3,7 @@
     <p>{{i18n "topic.publish_page.unpublished"}}</p>
   {{else}}
     {{#conditional-loading-spinner condition=initializing}}
-      <p>{{i18n "topic.publish_page.description"}}</p>
+      <p class="publish-description">{{i18n "topic.publish_page.description"}}</p>
 
       <form>
         <label>{{i18n "topic.publish_page.slug"}}</label>

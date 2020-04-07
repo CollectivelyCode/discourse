@@ -45,12 +45,9 @@ export default Controller.extend(ModalFunctionality, StateHelpers, {
     this.store
       .find("published_page", this.model.id)
       .then(page => {
-        this.set("state", States.existing);
-        this.set("publishedPage", page);
+        this.setProperties({ state: States.existing, publishedPage: page });
       })
-      .catch(() => {
-        this.startNew();
-      });
+      .catch(this.startNew);
   },
 
   @action
@@ -60,8 +57,8 @@ export default Controller.extend(ModalFunctionality, StateHelpers, {
 
   @action
   checkSlug() {
-    ajax("/pub/check-slug", {
-      data: { slug: this.publishedPage.get("slug") }
+    return ajax("/pub/check-slug", {
+      data: { slug: this.publishedPage.slug }
     }).then(result => {
       if (result.valid_slug) {
         this.set("state", States.valid);
@@ -74,7 +71,7 @@ export default Controller.extend(ModalFunctionality, StateHelpers, {
   @action
   unpublish() {
     this.set("state", States.unpublishing);
-    this.publishedPage
+    return this.publishedPage
       .destroyRecord()
       .then(() => {
         this.set("state", States.unpublished);
@@ -89,7 +86,7 @@ export default Controller.extend(ModalFunctionality, StateHelpers, {
   publish() {
     this.set("state", States.saving);
 
-    this.publishedPage
+    return this.publishedPage
       .update({ slug: this.publishedPage.slug })
       .then(() => {
         this.set("state", States.existing);
@@ -102,14 +99,13 @@ export default Controller.extend(ModalFunctionality, StateHelpers, {
 
   @action
   startNew() {
-    this.set("state", States.new);
-    this.set(
-      "publishedPage",
-      this.store.createRecord("published_page", {
+    this.setProperties({
+      state: States.new,
+      publishedPage: this.store.createRecord("published_page", {
         id: this.model.id,
         slug: this.model.slug
       })
-    );
+    });
     this.checkSlug();
   }
 });

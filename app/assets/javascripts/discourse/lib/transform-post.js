@@ -119,7 +119,8 @@ export default function transformPost(
     currentUser && (currentUser.id === post.user_id || currentUser.staff);
   postAtts.canReplyAsNewTopic = details.can_reply_as_new_topic;
   postAtts.canReviewTopic = !!details.can_review_topic;
-  postAtts.canPublishPage = !!details.can_publish_page;
+  postAtts.canPublishPage =
+    !!details.can_publish_page && post.post_number === 1;
   postAtts.isWarning = topic.is_warning;
   postAtts.links = post.get("internalLinks");
   postAtts.replyDirectlyBelow =
